@@ -1,33 +1,34 @@
 import React, { useEffect } from 'react';
-import { View, Text, ActivityIndicator } from 'react-native';
-import movieDB from '../api/movieDB';
-import { MovieDBNowPlaying } from '../interfaces/movieInterface';
+import { View, Text, ActivityIndicator, ScrollView } from 'react-native';
 import { useMovies } from '../hooks/useMovies';
-import { MovieCard } from '../components/MovieCard';
 import { MoviesCarousel } from '../components/MoviesCarousel';
+import { MoviesFlatList } from '../components/MoviesFlatList';
 
 const HomeScreen = () => {
 
-    const { peliculasEnCine , isLoading } = useMovies()
+    const { nowPlaying,top_rated, popular, upcoming,  isLoading } = useMovies()
 
-    //console.log(peliculasEnCine);
-
-    // if(isLoading){
-    //     return(
-    //         <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
-    //             <ActivityIndicator size={100} color="red" />
-    //         </View>
-    //     )
-    // }
+    if(isLoading){
+        return(
+            <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
+                <ActivityIndicator size={100} color="red" />
+            </View>
+        )
+    }
 
     return (
-        <View  style={{flex:1}}>
-            {/* <MovieCard
-                movie={peliculasEnCine[0]}
-            /> */}
-            <MoviesCarousel />
+        <ScrollView>
+            <View  style={{flex:1}}>
 
-        </View>
+                <MoviesCarousel />
+
+                <MoviesFlatList title='Populares'movies={popular}/>
+                <MoviesFlatList title='Top Rated'movies={top_rated}/>
+                <MoviesFlatList title='Upcomingq'movies={upcoming}/>
+
+
+            </View>
+        </ScrollView>
     )
 }
 

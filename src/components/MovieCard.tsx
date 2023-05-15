@@ -1,53 +1,70 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
+import { View, Text, Image, StyleSheet , Animated, Dimensions, TouchableOpacity } from 'react-native';
 import { Movie } from '../interfaces/movieInterface';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParams } from '../navigtaion/Navigation';
 
 
 interface Props {
     movie: Movie;
+    scrollY?: Animated.AnimatedInterpolation<string | number>;
+
 }
 
-export const MovieCard = ({ movie }: Props) => {
+
+const { width, height } = Dimensions.get('window');
+const ANCHO_CONTENEDOR = width * 0.7;
+const ESPACIO = 10;
+
+
+export const MovieCard = ({ movie , scrollY  }: Props) => {
 
 
     const uri = `https://image.tmdb.org/t/p/w500/${movie.poster_path}`
 
+    const navigation = useNavigation<StackNavigationProp<RootStackParams>>();
 
     return (
-        <View style={{
-            width: 300,
-            height: 420,
-        }}>
-            <View style={styles.imageContainer}>
+        <TouchableOpacity
+            style={{ width: ANCHO_CONTENEDOR }}
+            onPress={ () => navigation.navigate('DetailsScreen' , movie) }
+
+        >
+            <Animated.View
+                style={[
+                    styles.imageContainer,
+                    scrollY && {transform: [{ translateY: scrollY }]}
+
+                ]}
+            >
                 <Image
                     source={{ uri }}
-                    style={styles.image}
+                    style={styles.posterImage}
                 />
-            </View>
-
-        </View>
+            </Animated.View>
+        </TouchableOpacity>
     )
 }
 
 
 const styles = StyleSheet.create({
-    image: {
-        flex: 1,
-        borderRadius: 18,
 
+    posterImage: {
+        width:  "100%",
+        height: ANCHO_CONTENEDOR * 1.2,
+        resizeMode: "cover",
+        borderRadius: 34,
+        margin: 0,
+        marginBottom: 10,
     },
     imageContainer: {
-        flex: 1,
-        borderRadius:  18,
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: 5,
-        },
-        shadowOpacity: 0.34,
-        shadowRadius: 6.27,
-
-        elevation: 10,
+        marginHorizontal: ESPACIO,
+        padding: 5,
+        borderRadius: 34,
+        backgroundColor: '#ffffff',
+        alignItems: 'center',
     }
+
 
 })
